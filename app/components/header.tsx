@@ -37,7 +37,7 @@ useEffect(() => {
   const ham = document.querySelector('#ham')
   const menu = document.querySelector('#main-menu')
   const links = menu?.querySelectorAll('li')
-
+  const blur = document.querySelector("#blur")
   if (!ham || !menu || !links) return
 
   gsap.set(menu, {
@@ -45,9 +45,19 @@ useEffect(() => {
     opacity: 0,
     overflow: 'hidden'
   })
-
+gsap.set(blur,{
+  opacity:0,
+  display:'hidden',
+ x:-50000
+})
   const tl = gsap.timeline({ paused: true })
-
+  tl.to(blur,{
+    opacity:1,
+    display:'block'
+  })
+  tl.set(blur,{
+    x:0
+  })
   tl.to(menu, {
     height: '60vh',
     opacity: 1,
@@ -78,7 +88,7 @@ useEffect(() => {
 
 
   return (
-    <div className='w-full  relative  z-10 md:px-[2rem] fixed top-0 left-0 w-full z-50 bg-white lg:py-[32px] lg:px-[9rem] px-[1rem] justify-between flex flex-row items-center py-[1rem] h-fit'>
+    <div className='w-full  z-10 md:px-[2rem] fixed top-0 left-0 w-full z-50 bg-white lg:py-[32px] lg:px-[9rem] px-[1rem] justify-between flex flex-row items-center py-[1rem] h-fit'>
       <div className="w-[4rem] h-[4rem] md:w-[73.52px] md:h-[73px] ">
         <img className='w-full h-full object-cover' src="/logo.png" alt="" />
       </div>
@@ -96,6 +106,8 @@ useEffect(() => {
           <li><a href="#">Resources</a></li>
           <li><a href="#">Communities</a></li>
       </div>
+
+      <div id='blur' className='absolute z-[-2] fixed top-0 w-full z-50 bg-white/20 left-0 backdrop-blur-md border-b border-white/30 w-full h-screen '></div>
     </div>
   )
 }

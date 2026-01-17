@@ -1,6 +1,7 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import allJobListings, { type JobListing } from '../store/jobs'
+import gsap from 'gsap'
 function Opportunities() {
   const [currentFilter, setFilter] = useState<"" | "jobs" | "internships" | "academics" | "research">('jobs')
   const [jobs, setJobs] = useState<JobListing[] | []>([])
@@ -37,16 +38,17 @@ function Opportunities() {
   }
   const Chooser = () => {
     return <div className="md:ml-auto px-[1rem] flex justify-between gap-x-[.8rem] items-center  w-full md:w-[696px] h-[64px]">
-      <p onClick={() => { updater("jobs") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm cursor-pointer font-[400] ${currentFilter.includes("jobs") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""}`}>Jobs</p>
-      <p onClick={() => { updater("internships") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm  cursor-pointer font-[400]   ${currentFilter.includes("internships") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""}`}>Internships</p>
-      <p onClick={() => { updater("academics") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm cursor-pointer font-[400] ${currentFilter.includes("academics") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""}`}>Academics</p>
-      <p onClick={() => { updater("research") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm cursor-pointer font-[400] ${currentFilter.includes("research") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""} `}>Research</p>
+      <p  onClick={() => { updater("jobs") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm cursor-pointer font-[400] ${currentFilter.includes("jobs") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""}`}>Jobs</p>
+      <p  onClick={() => { updater("internships") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm  cursor-pointer font-[400]   ${currentFilter.includes("internships") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""}`}>Internships</p>
+      <p  onClick={() => { updater("academics") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm cursor-pointer font-[400] ${currentFilter.includes("academics") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""}`}>Academics</p>
+      <p  onClick={() => { updater("research") }} className={`lg:text-[20px] [@media_(min-width:320px)_and_(max-width:370px)]:text-sm cursor-pointer font-[400] ${currentFilter.includes("research") ? "text-white bg-[#808080] w-[100px] md:w-[170px] flex items-center justify-center h-[48px] rounded-[10px]" : ""} `}>Research</p>
     </div>
   }
 
   const Card = ({ description, postedDate, title, company, location,image, salary, applicationDeadline }: JobListing) => {
-    return <div className='
+    return <div id='filtered-item' className='
 h-fit  p-[clamp(0.75rem,2vw,2.5rem)]
+overflow-hidden
   bg-[#F7F7F7]
   w-full
   '>
@@ -191,7 +193,15 @@ h-fit  p-[clamp(0.75rem,2vw,2.5rem)]
 
 
   const Results = () => {
-    return <div className="lg:mt-[245px] mt-[60px] px-[16px] md:px-[75px] lg:px-[127px] w-full h-fit flex flex-col [@media_(min-width:320px)_and_(max-width:405px)]:gap-y-[2em] gap-y-[6em] md:gap-y-[10.8125rem]">
+  useLayoutEffect(()=>{
+     gsap.fromTo("#filtered-item",{y:50,opacity:0},{ y: 0,
+          opacity: 1,
+          duration: 1,
+          stagger: 0.06,
+          ease: "power3.out"})
+  },[jobs])
+
+    return <div className="lg:mt-[245px] overflow-hidden mt-[60px] px-[16px] md:px-[75px] lg:px-[127px] w-full h-fit flex flex-col [@media_(min-width:320px)_and_(max-width:405px)]:gap-y-[2em] gap-y-[6em] md:gap-y-[10.8125rem]">
       {jobs.map((job: JobListing) => {
         return <Card key={job.id} image={job.image} salary={job.salary} jobType={job.jobType} id={job.id} company={job.company} applicationDeadline={job.applicationDeadline} location={job.location} title={job.title} postedDate={job.postedDate} description={job.description} />
       })}
